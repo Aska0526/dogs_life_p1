@@ -55,4 +55,20 @@ public class DogHandlerTest {
         assertEquals(NOFDOGS,actualResult);
     }
 
+    @Test
+    public void find_Dog_by_Name_If_only_exist() {
+        // arrange
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        final int NFOFDOGS = 1;
+        Dog exist = new Dog();
+        exist.setName("Bruno");
+        long id = cut.addDog(exist);
+
+        exist = cut.getDogByName(exist.getName());
+
+        assertEquals("Bruno", exist.getName());
+        assertEquals(id, exist.getId());
+    }
+
 }
