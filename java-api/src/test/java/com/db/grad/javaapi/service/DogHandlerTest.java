@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class DogHandlerTest {
 
@@ -57,10 +58,8 @@ public class DogHandlerTest {
 
     @Test
     public void find_Dog_by_Name_If_only_exist() {
-        // arrange
         DogHandler cut = new DogHandler(itsDogRepo);
 
-        final int NFOFDOGS = 1;
         Dog exist = new Dog();
         exist.setName("Bruno");
         long id = cut.addDog(exist);
@@ -69,6 +68,19 @@ public class DogHandlerTest {
 
         assertEquals("Bruno", exist.getName());
         assertEquals(id, exist.getId());
+    }
+
+    @Test
+    public void find_Dog_by_Name_If_No_dog_has_such_name() {
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        Dog exist = new Dog();
+        exist.setName("Bruno");
+        cut.addDog(exist);
+
+        exist = cut.getDogByName("John");
+
+        assertNull(exist);
     }
 
 }
