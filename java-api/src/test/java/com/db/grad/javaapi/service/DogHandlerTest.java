@@ -151,6 +151,33 @@ public class DogHandlerTest {
     }
 
     @Test
+    public void find_Dog_by_Name_If_only_exist() {
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        Dog exist = new Dog();
+        exist.setName("Bruno");
+        long id = cut.addDog(exist);
+
+        exist = cut.getDogByName(exist.getName());
+
+        assertEquals("Bruno", exist.getName());
+        assertEquals(id, exist.getId());
+    }
+
+    @Test
+    public void find_Dog_by_Name_If_No_dog_has_such_name() {
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        Dog exist = new Dog();
+        exist.setName("Bruno");
+        cut.addDog(exist);
+
+        exist = cut.getDogByName("John");
+
+        assertNull(exist);
+    }
+
+    @Test 
     public void update_dog_that_not_exists_throws() {
         DogHandler cut = new DogHandler(itsDogRepo);
         Dog theDog = new Dog();

@@ -4,6 +4,7 @@ import com.db.grad.javaapi.exceptions.DogNotFoundException;
 import com.db.grad.javaapi.model.Dog;
 import com.db.grad.javaapi.repository.DogsRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DogHandler {
@@ -22,6 +23,18 @@ public class DogHandler {
         return itsDogRepo.count();
     }
 
+    public Dog getDogByName(String name) {
+        Dog dog = new Dog();
+        dog.setName(name);
+        List<Dog> list = itsDogRepo.findByName(dog);
+
+        if (list.size() != 1) {
+            return null;
+        }
+
+        return list.get(0);
+    }
+  
     public Dog getDogById(long uniqueID) {
         return itsDogRepo.findById(uniqueID);
     }
