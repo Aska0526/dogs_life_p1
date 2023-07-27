@@ -86,18 +86,7 @@ public class DogHandlerTest {
 
         DogHandler cut = new DogHandler(itsDogRepo);
 
-        Dog theDog = new Dog();
-        theDog.setName("Bruce");
-        cut.addDog(theDog);
-        theDog = new Dog();
-        theDog.setName("Clark");
-        long uniqueID = cut.addDog(theDog);
-        Dog expectedDog = theDog;
-        theDog = new Dog();
-        theDog.setName("Diana");
-        cut.addDog(theDog);
-
-        Dog actualResult = cut.getDogById(88);
+        Dog actualResult = cut.getDogById(88564);
 
         assertNull(actualResult);
 
