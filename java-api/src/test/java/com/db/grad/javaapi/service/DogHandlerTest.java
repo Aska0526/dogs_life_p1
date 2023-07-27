@@ -86,6 +86,12 @@ public class DogHandlerTest {
 
         DogHandler cut = new DogHandler(itsDogRepo);
 
+        //make sure repo has at least one dog
+        Dog theDog = new Dog();
+        theDog.setName("Bruce");
+        cut.addDog(theDog);
+
+        //use a wrong id
         Dog actualResult = cut.getDogById(88564);
 
         assertNull(actualResult);
