@@ -58,6 +58,45 @@ public class DogHandlerTest {
     }
 
     @Test
+    public void remove_dog_and_return_true_if_removed(){
+
+        //arrange
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        //act
+        Dog theDog = new Dog();
+        theDog.setName("Bruno");
+        Long idOfTheDog = cut.addDog(theDog);
+
+        boolean actualResult = cut.removeDog(idOfTheDog);
+
+        boolean expectedResult = true;
+
+        //assert
+
+        assertEquals(expectedResult,actualResult);
+    }
+
+    @Test
+    public void remove_dog_that_is_not_in_db_return_false(){
+
+        //arrange
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        //act
+        Dog theDog = new Dog();
+        theDog.setName("Bruno");
+        Long idOfTheDog = cut.addDog(theDog);
+
+        long noOfDogs = cut.getNoOfDogs();
+        boolean actualResult = cut.removeDog(noOfDogs+1);
+        boolean expectedResult = false;
+
+        assertEquals(actualResult,expectedResult);
+        
+    }
+
+    @Test
     public void update_dog_that_exists_returns_dog_id() {
         DogHandler cut = new DogHandler(itsDogRepo);
         Dog theDog = new Dog();
