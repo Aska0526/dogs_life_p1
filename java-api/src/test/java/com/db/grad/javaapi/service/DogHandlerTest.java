@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DogHandlerTest {
@@ -110,6 +111,46 @@ public class DogHandlerTest {
     }
 
     @Test
+    public void find_dog_by_id_returns_dog(){
+
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        Dog theDog = new Dog();
+        theDog.setName("Bruce");
+        cut.addDog(theDog);
+        theDog = new Dog();
+        theDog.setName("Clark");
+        long uniqueID = cut.addDog(theDog);
+        Dog expectedDog = theDog;
+        theDog = new Dog();
+        theDog.setName("Diana");
+        cut.addDog(theDog);
+
+        Dog actualResult = cut.getDogById(uniqueID);
+
+        assertEquals(expectedDog.getId(),actualResult.getId());
+        assertEquals(expectedDog.getName(),actualResult.getName());
+
+    }
+
+    @Test
+    public void find_dog_by_wrong_id_returns_null(){
+
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        //make sure repo has at least one dog
+        Dog theDog = new Dog();
+        theDog.setName("Bruce");
+        cut.addDog(theDog);
+
+        //use a wrong id
+        Dog actualResult = cut.getDogById(88564);
+
+        assertNull(actualResult);
+
+    }
+
+    @Test
     public void update_dog_that_not_exists_throws() {
         DogHandler cut = new DogHandler(itsDogRepo);
         Dog theDog = new Dog();
@@ -121,3 +162,4 @@ public class DogHandlerTest {
         assertThrows(DogNotFoundException.class, () -> cut.updateDogDetails(theSecondDog));
     }
 }
+

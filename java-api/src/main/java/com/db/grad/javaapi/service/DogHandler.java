@@ -22,12 +22,17 @@ public class DogHandler {
         return itsDogRepo.count();
     }
 
+    public Dog getDogById(long uniqueID) {
+        return itsDogRepo.findById(uniqueID);
+    }
+  
     public boolean removeDog(long id){
         if(itsDogRepo.findById(id) != null){
             return itsDogRepo.delete(itsDogRepo.findById(id));
         }
        return false;
     }
+  
     public long updateDogDetails(Dog theDog) {
         if (itsDogRepo.findById(theDog.getId()) != null) {
             return itsDogRepo.save(theDog);
