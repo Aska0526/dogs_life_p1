@@ -19,5 +19,5 @@ public class Calculator {
     public void destroy() {
         System.out.println("Calculator will be destroyed");
     }
-    
+
 }
