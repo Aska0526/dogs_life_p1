@@ -13,6 +13,10 @@ public class HeroService {
     @Autowired
     private HeroRepository heroRepository;
 
+    public Hero saveHero(Hero hero) {
+        return heroRepository.save(hero);
+    }
+
     public List<Hero> getHeroesStartingWithLetter(String letter) {
         String letterParam = letter + "%";
         return heroRepository.findHeroesNameStartingWithLetter(letterParam);
