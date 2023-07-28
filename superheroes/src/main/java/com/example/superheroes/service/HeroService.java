@@ -25,4 +25,11 @@ public class HeroService {
     public List<Hero> getLastThreeHeroesByName(){
         return heroRepository.findTop3ByOrderByNameDesc();
     }
+
+    public Hero saveHero(Hero heroToBeSaved){
+        if(heroRepository.save(heroToBeSaved) == null){
+            return null;
+        }
+        return heroToBeSaved;
+    }
 }

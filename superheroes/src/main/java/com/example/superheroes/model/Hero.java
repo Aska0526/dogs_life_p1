@@ -16,6 +16,7 @@ public class Hero {
 
     private String superpower;
 
+
     private int teamid;
 
     public int getId() {
@@ -53,6 +54,7 @@ public class Hero {
     public int getTeamid() {
         return teamid;
     }
+
 
     public void setTeamid(int teamid) {
         this.teamid = teamid;
