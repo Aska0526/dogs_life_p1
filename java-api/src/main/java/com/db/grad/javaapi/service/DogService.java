@@ -3,22 +3,23 @@ package com.db.grad.javaapi.service;
 import com.db.grad.javaapi.exceptions.DogNotFoundException;
 import com.db.grad.javaapi.model.Dog;
 import com.db.grad.javaapi.repository.DogsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DogHandler {
+public class DogService {
 
 
+    @Autowired
     private DogsRepository itsDogRepo;
 
-    public DogHandler(DogsRepository repo) {
+    public DogService(DogsRepository repo) {
         itsDogRepo = repo;
     }
 
-    public Long addDog(Dog theDog) {
+    public Dog addDog(Dog theDog) {
         return itsDogRepo.save(theDog);
     }
 
@@ -42,14 +43,13 @@ public class DogHandler {
         return itsDogRepo.findById(uniqueID);
     }
   
-    public boolean removeDog(long id){
+    public void removeDog(long id){
         if(itsDogRepo.findById(id) != null){
-            return itsDogRepo.delete(itsDogRepo.findById(id));
+            itsDogRepo.delete(itsDogRepo.findById(id));
         }
-       return false;
     }
   
-    public long updateDogDetails(Dog theDog) {
+    public Dog updateDogDetails(Dog theDog) {
         if (itsDogRepo.findById(theDog.getId()) != null) {
             return itsDogRepo.save(theDog);
         } else {

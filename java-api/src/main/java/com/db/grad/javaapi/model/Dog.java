@@ -1,7 +1,14 @@
 package com.db.grad.javaapi.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="dogs")
 public class Dog
 {
+    @Id
     private long id;
     private String name;
 
