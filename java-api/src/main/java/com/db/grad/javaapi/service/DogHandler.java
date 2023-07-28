@@ -3,11 +3,14 @@ package com.db.grad.javaapi.service;
 import com.db.grad.javaapi.exceptions.DogNotFoundException;
 import com.db.grad.javaapi.model.Dog;
 import com.db.grad.javaapi.repository.DogsRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class DogHandler {
+
 
     private DogsRepository itsDogRepo;
 
