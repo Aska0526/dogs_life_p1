@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DogHandlerTest {
+public class DogServiceTest {
 
     private final DogsRepository itsDogRepo = new DogsRepositoryStub();
 
@@ -24,7 +24,7 @@ public class DogHandlerTest {
     public void add_a_dog_return_number_of_dogs_in_repo_is_one() {
 
         //arrange
-        DogHandler cut = new DogHandler(itsDogRepo);
+        DogService cut = new DogService(itsDogRepo);
 
         //act
         Dog theDog = new Dog();
@@ -42,7 +42,7 @@ public class DogHandlerTest {
     public void add_several_dog_return_number_of_dogs_match_number_added() {
 
         //arrange
-        DogHandler cut = new DogHandler(itsDogRepo);
+        DogService cut = new DogService(itsDogRepo);
 
         //act
         final int NOFDOGS = 3;
@@ -62,7 +62,7 @@ public class DogHandlerTest {
     public void remove_dog_and_return_true_if_removed(){
 
         //arrange
-        DogHandler cut = new DogHandler(itsDogRepo);
+        DogService cut = new DogService(itsDogRepo);
 
         //act
         Dog theDog = new Dog();
@@ -82,7 +82,7 @@ public class DogHandlerTest {
     public void remove_dog_that_is_not_in_db_return_false(){
 
         //arrange
-        DogHandler cut = new DogHandler(itsDogRepo);
+        DogService cut = new DogService(itsDogRepo);
 
         //act
         Dog theDog = new Dog();
@@ -99,7 +99,7 @@ public class DogHandlerTest {
 
     @Test
     public void update_dog_that_exists_returns_dog_id() {
-        DogHandler cut = new DogHandler(itsDogRepo);
+        DogService cut = new DogService(itsDogRepo);
         Dog theDog = new Dog();
         theDog.setName("Bruno");
         long expectedId = cut.addDog(theDog);
@@ -113,7 +113,7 @@ public class DogHandlerTest {
     @Test
     public void find_dog_by_id_returns_dog(){
 
-        DogHandler cut = new DogHandler(itsDogRepo);
+        DogService cut = new DogService(itsDogRepo);
 
         Dog theDog = new Dog();
         theDog.setName("Bruce");
@@ -136,7 +136,7 @@ public class DogHandlerTest {
     @Test
     public void find_dog_by_wrong_id_returns_null(){
 
-        DogHandler cut = new DogHandler(itsDogRepo);
+        DogService cut = new DogService(itsDogRepo);
 
         //make sure repo has at least one dog
         Dog theDog = new Dog();
@@ -152,7 +152,7 @@ public class DogHandlerTest {
 
     @Test
     public void find_Dog_by_Name_If_only_exist() {
-        DogHandler cut = new DogHandler(itsDogRepo);
+        DogService cut = new DogService(itsDogRepo);
 
         Dog exist = new Dog();
         exist.setName("Bruno");
@@ -166,7 +166,7 @@ public class DogHandlerTest {
 
     @Test
     public void find_Dog_by_Name_If_No_dog_has_such_name() {
-        DogHandler cut = new DogHandler(itsDogRepo);
+        DogService cut = new DogService(itsDogRepo);
 
         Dog exist = new Dog();
         exist.setName("Bruno");
@@ -179,7 +179,7 @@ public class DogHandlerTest {
 
     @Test
     public void update_dog_that_not_exists_throws() {
-        DogHandler cut = new DogHandler(itsDogRepo);
+        DogService cut = new DogService(itsDogRepo);
         Dog theDog = new Dog();
         theDog.setName("Bruno");
         cut.addDog(theDog);
