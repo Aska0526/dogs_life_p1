@@ -26,5 +26,7 @@ public class HeroService {
         return heroRepository.findTop3ByOrderByNameDesc();
     }
 
-
+    public Hero saveHero(Hero hero){
+        return heroRepository.save(hero);
+    }
 }
