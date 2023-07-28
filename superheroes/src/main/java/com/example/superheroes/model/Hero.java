@@ -14,7 +14,7 @@ public class Hero {
 
     private String alias;
 
-    private String superPower;
+    private String superpower;
 
     private int teamid;
 
@@ -43,11 +43,11 @@ public class Hero {
     }
 
     public String getSuperPower() {
-        return superPower;
+        return superpower;
     }
 
     public void setSuperPower(String superPower) {
-        this.superPower = superPower;
+        this.superpower = superPower;
     }
 
     public int getTeam_id() {
@@ -64,7 +64,7 @@ public class Hero {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", alias='" + alias + '\'' +
-                ", superPower='" + superPower + '\'' +
+                ", superPower='" + superpower + '\'' +
                 ", teamid=" + teamid +
                 '}';
     }
