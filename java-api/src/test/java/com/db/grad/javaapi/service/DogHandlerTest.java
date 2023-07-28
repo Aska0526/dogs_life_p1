@@ -1,287 +1,191 @@
 package com.db.grad.javaapi.service;
 
+import com.db.grad.javaapi.exceptions.DogNotFoundException;
 import com.db.grad.javaapi.model.Dog;
 import com.db.grad.javaapi.repository.DogsRepository;
-import org.junit.Ignore;
+import com.db.grad.javaapi.repository.DogsRepositoryStub;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+public class DogHandlerTest {
 
-@ExtendWith(MockitoExtension.class)
-public class DogsHandlerTest
-{
-    @Mock
-    private DogsRepository itsDogsRepo;
+    private final DogsRepository itsDogRepo = new DogsRepositoryStub();
 
-    @InjectMocks
-    @Autowired
-    private DogHandler cut;
+    @BeforeEach
+    public void makeSureRepoIsEmpty() {
+        itsDogRepo.deleteAll();
+    }
 
     @Test
-    public  void    add_a_dog_return_number_of_dogs_in_repo_is_one()
-    {
-        // arrange
+    public void add_a_dog_return_number_of_dogs_in_repo_is_one() {
+
+        //arrange
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        //act
         Dog theDog = new Dog();
         theDog.setName("Bruno");
-        Mockito.when(itsDogsRepo.save(theDog)).thenReturn(theDog);
-        Mockito.when(itsDogsRepo.count()).thenReturn(1L);
-        cut.addDog( theDog );
-
+        cut.addDog(theDog);
         int expectedResult = 1;
 
-        // act
         long actualResult = cut.getNoOfDogs();
 
-        // assert
-        assertEquals( expectedResult, actualResult );
+        //assert
+        assertEquals(expectedResult, actualResult);
     }
 
     @Test
-    public  void    add_several_dogs_return_number_of_dogs_match_number_added()
-    {
-        // arrange
+    public void add_several_dog_return_number_of_dogs_match_number_added() {
+
+        //arrange
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        //act
+        final int NOFDOGS = 3;
+        for (int i = 0; i < NOFDOGS; i++) {
+            Dog theDog = new Dog();
+            theDog.setName("Bruno" + i);
+            cut.addDog(theDog);
+        }
+
+        long actualResult = cut.getNoOfDogs();
+
+        //assert
+        assertEquals(NOFDOGS, actualResult);
+    }
+
+    @Test
+    public void remove_dog_and_return_true_if_removed(){
+
+        //arrange
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        //act
         Dog theDog = new Dog();
         theDog.setName("Bruno");
-        cut.addDog( theDog );
+        Long idOfTheDog = cut.addDog(theDog);
+
+        boolean actualResult = cut.removeDog(idOfTheDog);
+
+        boolean expectedResult = true;
+
+        //assert
+
+        assertEquals(expectedResult,actualResult);
+    }
+
+    @Test
+    public void remove_dog_that_is_not_in_db_return_false(){
+
+        //arrange
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        //act
+        Dog theDog = new Dog();
+        theDog.setName("Bruno");
+        Long idOfTheDog = cut.addDog(theDog);
+
+        long noOfDogs = cut.getNoOfDogs();
+        boolean actualResult = cut.removeDog(noOfDogs+1);
+        boolean expectedResult = false;
+
+        assertEquals(actualResult,expectedResult);
+
+    }
+
+    @Test
+    public void update_dog_that_exists_returns_dog_id() {
+        DogHandler cut = new DogHandler(itsDogRepo);
+        Dog theDog = new Dog();
+        theDog.setName("Bruno");
+        long expectedId = cut.addDog(theDog);
+        theDog.setName("NotBruno");
+
+        long actualId = cut.updateDogDetails(theDog);
+
+        assertEquals(expectedId, actualId);
+    }
+
+    @Test
+    public void find_dog_by_id_returns_dog(){
+
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        Dog theDog = new Dog();
+        theDog.setName("Bruce");
+        cut.addDog(theDog);
         theDog = new Dog();
-        theDog.setName("Frank");
-        cut.addDog( theDog );
-        theDog = new Dog();
-        theDog.setName("Penny");
-        cut.addDog( theDog );
-        Mockito.when(itsDogsRepo.count()).thenReturn(3L);
-
-        int expectedResult = 3;
-
-        // act
-        long actualResult = cut.getNoOfDogs();
-
-        // assert
-        assertEquals( expectedResult, actualResult );
-    }
-
-    @Ignore
-    @Test
-    public  void    add_dog_and_remove_dog_return_number_of_dogs_is_zero()
-    {
-        // arrange
-        Dog theDog = new Dog();
-        theDog.setName("Bruno");
-        Mockito.when(itsDogsRepo.save(theDog)).thenReturn(theDog);
-        Dog uniqueDog = cut.addDog( theDog );
-
-        Optional<Dog> opt = Optional.of(theDog);
-        Mockito.when(itsDogsRepo.findById(theDog.getId())).thenReturn(opt);
-
-        long expectedResult = 0;
-        boolean expectedStatus = true;
-
-        // act
-        boolean actualStatus = cut.removeDog( uniqueDog.getId() );
-        long actualResult = cut.getNoOfDogs();
-
-        // assert
-        assertEquals( expectedStatus, actualStatus);
-        assertEquals( expectedResult, actualResult );
-        verify(itsDogsRepo, times(1)).delete(theDog);
-    }
-
-    // This test covers the other logic path in cut.removeDog()
-    @Ignore
-    @Test
-    public  void    add_dog_and_remove_dog_that_doess_not_exist_return_number_of_dogs_is_one()
-    {
-        // arrange
-        Dog theDog = new Dog();
-        theDog.setName("Bruno");
-        Dog uniqueDog = cut.addDog( theDog );
-
-        long invalidId = 33;
-        long expectedResult = 1;
-        boolean expectedStatus = false;
-
-        Optional<Dog> opt = Optional.empty();
-        Mockito.when(itsDogsRepo.findById(invalidId)).thenReturn(opt);
-
-        Mockito.when(itsDogsRepo.count()).thenReturn(1L);
-
-        // act
-        // There is no dog with ID == 33
-        boolean actualStatus = cut.removeDog( invalidId );
-        long actualResult = cut.getNoOfDogs();
-
-        // assert
-        assertEquals( expectedStatus, actualStatus);
-        assertEquals( expectedResult, actualResult );
-        verify(itsDogsRepo, times(0)).delete(theDog);
-    }
-
-    @Test
-    public  void    find_dog_by_valid_id_returns_one_dog()
-    {
-        // arrange
-        Dog theDog = new Dog();
-        theDog.setName("Bruno");
-        cut.addDog( theDog );
-        theDog = new Dog();
-        theDog.setName("Frank");
-        Mockito.when(itsDogsRepo.save(theDog)).thenReturn(theDog);
-        Dog addedDog = cut.addDog( theDog );
+        theDog.setName("Clark");
+        long uniqueID = cut.addDog(theDog);
         Dog expectedDog = theDog;
         theDog = new Dog();
-        theDog.setName("Penny");
-        cut.addDog( theDog );
+        theDog.setName("Diana");
+        cut.addDog(theDog);
 
-        Dog jpaDog = addedDog;
-        Optional<Dog> opt = Optional.of(addedDog);
-        Mockito.when(itsDogsRepo.findById(addedDog.getId())).thenReturn(opt);
+        Dog actualResult = cut.getDogById(uniqueID);
 
-        // act
-        Dog actualResult = cut.getDogById( addedDog.getId() );
+        assertEquals(expectedDog.getId(),actualResult.getId());
+        assertEquals(expectedDog.getName(),actualResult.getName());
 
-        // assert
-        assertEquals( expectedDog.getId(), actualResult.getId() );
-        assertEquals( expectedDog.getName(), actualResult.getName() );
-    }
-
-    @Ignore
-    @Test
-    public  void    find_dog_by_invalid_id_returns_null_dog()
-    {
-        // arrange
-        Dog theDog = new Dog();
-        theDog.setName("Bruno");
-        cut.addDog( theDog );
-        theDog = new Dog();
-        theDog.setName("Frank");
-        cut.addDog( theDog );
-        theDog = new Dog();
-        theDog.setName("Penny");
-        cut.addDog( theDog );
-        long invalidId = 33;
-
-        Optional<Dog> opt = Optional.empty();
-        Mockito.when(itsDogsRepo.findById(invalidId)).thenReturn(opt);
-
-        // act
-        assertThrows(NoSuchElementException.class, () -> {
-            cut.getDogById( invalidId );
-        });
     }
 
     @Test
-    public  void    find_dog_by_name_returns_one_dog()
-    {
-        // arrange
+    public void find_dog_by_wrong_id_returns_null(){
+
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        //make sure repo has at least one dog
         Dog theDog = new Dog();
-        theDog.setName("Bruno");
-        cut.addDog( theDog );
-        theDog = new Dog();
-        theDog.setName("Frank");
-        cut.addDog( theDog );
-        Dog expectedDog = theDog;
-        String dogToFind = "Frank";
-        theDog = new Dog();
-        theDog.setName("Penny");
-        cut.addDog( theDog );
-        ArrayList<Dog> expectedList = new ArrayList<>();
-        expectedList.add(expectedDog);
-        Mockito.when(itsDogsRepo.findByName(Mockito.any())).thenReturn(expectedList);
+        theDog.setName("Bruce");
+        cut.addDog(theDog);
 
-        // act
-        Dog actualResult = cut.getDogByName( dogToFind );
+        //use a wrong id
+        Dog actualResult = cut.getDogById(88564);
 
-        // assert
-        assertEquals( expectedDog.getId(), actualResult.getId() );
-        assertEquals( expectedDog.getName(), actualResult.getName() );
-    }
+        assertNull(actualResult);
 
-
-    @Test
-    public  void    find_dog_by_name_returns_null_because_many_dogs_with_same_name()
-    {
-        // arrange
-        Dog theDog = new Dog();
-        theDog.setName("Bruno");
-        cut.addDog( theDog );
-        theDog = new Dog();
-        theDog.setName("Bruno");
-        cut.addDog( theDog );
-        Dog expectedDog = theDog;
-        String dogToFind = "Bruno";
-        theDog = new Dog();
-        theDog.setName("Penny");
-        cut.addDog( theDog );
-        ArrayList<Dog> expectedList = new ArrayList<>();
-        Mockito.when(itsDogsRepo.findByName(Mockito.any())).thenReturn(expectedList);
-
-        // act
-        Dog actualResult = cut.getDogByName( dogToFind );
-
-        // assert
-        assertNull( actualResult );
     }
 
     @Test
-    public  void    find_dog_by_invalid_name_returns_null_dog()
-    {
-        // arrange
-//        DogHandler cut = new DogHandler();
-        Dog theDog = new Dog();
-        theDog.setName("Bruno");
-        cut.addDog( theDog );
-        theDog = new Dog();
-        theDog.setName("Frank");
-        cut.addDog( theDog );
-        theDog = new Dog();
-        theDog.setName("Penny");
-        cut.addDog( theDog );
-        ArrayList<Dog> expectedList = new ArrayList<>();
-        Mockito.when(itsDogsRepo.findByName(Mockito.any())).thenReturn(expectedList);
+    public void find_Dog_by_Name_If_only_exist() {
+        DogHandler cut = new DogHandler(itsDogRepo);
 
-        // act
-        Dog actualResult = cut.getDogByName( "Selvyn" );
+        Dog exist = new Dog();
+        exist.setName("Bruno");
+        long id = cut.addDog(exist);
 
-        // assert
-        assertNull( actualResult );
+        exist = cut.getDogByName(exist.getName());
+
+        assertEquals("Bruno", exist.getName());
+        assertEquals(id, exist.getId());
     }
 
-    @Ignore
     @Test
-    public  void    update_dog_that_exists_returns_dog_id()
-    {
-        // arrange
+    public void find_Dog_by_Name_If_No_dog_has_such_name() {
+        DogHandler cut = new DogHandler(itsDogRepo);
+
+        Dog exist = new Dog();
+        exist.setName("Bruno");
+        cut.addDog(exist);
+
+        exist = cut.getDogByName("John");
+
+        assertNull(exist);
+    }
+
+    @Test
+    public void update_dog_that_not_exists_throws() {
+        DogHandler cut = new DogHandler(itsDogRepo);
         Dog theDog = new Dog();
         theDog.setName("Bruno");
-        cut.addDog( theDog );
-        theDog = new Dog();
-        theDog.setName("Frank");
-        Mockito.when(itsDogsRepo.save(theDog)).thenReturn(theDog);
-        Dog expectedDog = cut.addDog( theDog );
-        Dog dogToUpdate = theDog;
-        String dogToFind = "Frank";
-        theDog = new Dog();
-        theDog.setName("Penny");
-        cut.addDog( theDog );
-        Mockito.when(itsDogsRepo.save(dogToUpdate)).thenReturn(dogToUpdate);
+        cut.addDog(theDog);
+        Dog theSecondDog = new Dog();
+        theSecondDog.setName("NotBruno");
 
-        // act
-        dogToUpdate.setName("Charlie");
-        Dog actualDog = cut.updateDogDetails( dogToUpdate );
-
-        // assert
-        assertEquals( expectedDog, actualDog );
+        assertThrows(DogNotFoundException.class, () -> cut.updateDogDetails(theSecondDog));
     }
 }
