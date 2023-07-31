@@ -56,4 +56,10 @@ public class DogService {
             throw new DogNotFoundException();
         }
     }
+
+    public List<Dog> getAllDogs() {
+        return itsDogRepo.findAll();
+    }
+
+
 }
