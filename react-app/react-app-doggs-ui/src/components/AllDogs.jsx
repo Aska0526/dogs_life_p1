@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import DogDetail from './DogDetail'
-import { useState } from 'react';
 import { getAllDogs, getNoOfDogs } from '../services/dog-service';
 import { Row } from 'react-bootstrap';
 const AllDogs = () => {
@@ -17,6 +16,7 @@ const AllDogs = () => {
     const getDogsFromAPI = () => {
         getAllDogs()
             .then(res => {
+                console.log("data recieved");
                 setDogs(res.data);
             })
             .catch(err => {
