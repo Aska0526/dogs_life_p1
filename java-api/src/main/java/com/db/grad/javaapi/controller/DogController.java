@@ -12,6 +12,11 @@ public class DogController {
     @Autowired
     DogService dogService;
 
+    @GetMapping("/dogs/count-dogs")
+    public long getNoOfDogsInDb(){
+        return dogService.getNoOfDogs();
+    }
+  
     @GetMapping("/dogs/{id}")
     public Dog getDogBySpecificID(long id){
         return dogService.getDogById(id);
