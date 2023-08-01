@@ -16,7 +16,6 @@ const AllDogs = () => {
     const getDogsFromAPI = () => {
         getAllDogs()
             .then(res => {
-                console.log("data recieved");
                 setDogs(res.data);
             })
             .catch(err => {
