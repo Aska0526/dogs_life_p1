@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button'
+import { saveHero } from '../services/hero-service';
+import { useNavigate } from 'react-router-dom';
 
 const HeroForm = () => {
   const [alias, setAlias] = useState('');
@@ -25,21 +27,28 @@ const HeroForm = () => {
     setTeamID(event.target.value)
   }
 
+  const navigate = useNavigate();
+
   
-  let hero = {};
-  hero.alias = alias;
-  hero.name = name;
-  hero.ability = ability;
-  hero.teamID = teamID;
 
   const handleSubmit =(event)=>{
     event.preventDefault();
     let hero = {};
     hero.alias = alias;
     hero.name = name;
-    hero.ability = ability;
+    hero.superpower = ability;
     hero.teamID = teamID;
-    console.log(hero);
+    saveHero(hero)
+    .then(res => {
+      setAbility('');
+      setAlias('');
+      setName('');
+      setTeamID(0);
+      navigate("/")
+      })
+    .catch(err=>{
+       console.log(err);
+      }) 
   }
 
   return (
