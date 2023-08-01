@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter } from 'react-router-dom';
 import Batman from "./images/1.jpeg";
 import Superman from "./images/2.jpeg";
 import GreenLantern from "./images/4.jpeg";
@@ -31,7 +32,9 @@ export default images;
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter> 
   </React.StrictMode>
 );
 
