@@ -19,6 +19,10 @@ public class DogService {
         itsDogRepo = repo;
     }
 
+    public List<Dog> getAllDogs() {
+        return itsDogRepo.findAll();
+    }
+
     public Dog addDog(Dog theDog) {
         return itsDogRepo.save(theDog);
     }
